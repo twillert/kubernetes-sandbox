@@ -1,0 +1,8 @@
+yum install -y git docker
+yum install -y golang
+git config --global user.email "thomas@willert.dk"
+git config --global user.name "Thomas Willert"
+
+
+
+
