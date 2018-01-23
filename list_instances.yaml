@@ -1,0 +1,13 @@
+---
+- name: list all instances with tag owner=thomas
+  hosts: localhost
+  tasks:
+    - name: get instances
+      ec2_instance_facts:
+#        filters:
+#          "tag:Owner": Thomas
+         filters:
+           instance_type: t2.medium
+#    - debug: var=instances
+
+
