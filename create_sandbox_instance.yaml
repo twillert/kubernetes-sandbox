@@ -6,7 +6,8 @@
     keypair:		thomas_internet_home
     instance_type:	t2.medium
     security_group:	thomas_internet_ssh
-    image:		ami-5652ce39
+    #image:		ami-5652ce39	# Amazon Linux
+    image:		ami-194cdc76	# RHEL 7.4
     region:		eu-central-1
     subnet:		subnet-a2a831d8
   tasks:
@@ -22,9 +23,10 @@
          assign_public_ip: yes
          instance_tags:
            owner: thomas
+         count: 3
       register: ec2
 
-    - debug: var=ec2
+    - debug:  var=ec2.instances.public_ip
 
     - name: Add new instance to host group
       add_host:

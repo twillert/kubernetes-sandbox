@@ -1,7 +1,7 @@
 [all]
-master ansible_host=18.196.145.185
-node1  ansible_host=18.194.160.43
-node2  ansible_host=18.194.127.42
+master ansible_host=35.156.200.57
+node1  ansible_host=18.196.162.134
+node2  ansible_host=35.158.251.41
 
 [all:vars]
 ansible_user=ec2-user
