@@ -16,6 +16,10 @@
 #    - debug: var=ec2_num
 #    - debug: var=ec2
 
-    - name: public IPs from running instances with tag owner:thomas
+    - name: public IPs
       debug: var="ec2.instances.{{ item }}.public_ip_address"
+      with_sequence: start=0 count="{{ ec2_num }}"
+
+    - name: public DNS
+      debug: var="ec2.instances.{{ item }}.public_dns_name"
       with_sequence: start=0 count="{{ ec2_num }}"

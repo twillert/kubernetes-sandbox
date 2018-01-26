@@ -1,0 +1,4 @@
+--flush-cache:
+	if re-running cluster.yml with different IPs, or new hosts
+        Playbook will cache in /tmp
+

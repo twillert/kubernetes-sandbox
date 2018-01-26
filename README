@@ -30,3 +30,8 @@ For command line Ansible commands:
 
 ansible -i /etc/ansible/ec2.py all -m ping
 
+
+---
+
+
+
