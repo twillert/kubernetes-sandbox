@@ -1,0 +1,53 @@
+#
+# Create a simple Kubernetes cluster:
+#   - 1x Master (etcd too)
+#   - 2x Worker nodes
+#
+---
+- hosts: kube-master:kube-node
+  vars:
+    keypair:		thomas_internet_home
+    instance_type:	t2.medium
+    security_group:	thomas_internet_ssh
+    #image:		ami-5652ce39	# Amazon Linux
+    image:		ami-194cdc76	# RHEL 7.4
+
+  tasks:
+    - name: setup Kubernetes RPM repository
+      copy:
+        src: files/k8s.repo
+        dest: /etc/yum.repos.d/kubernetes.repo
+
+    - shell: yum-config-manager --enable rhui-REGION-rhel-server-extras
+
+    - selinux: state=disabled
+
+    - name: install Docker
+      yum:
+        name: docker
+        state: installed
+
+    - name: install K8S packages
+      yum:
+        name: "{{  item }}"
+        state: installed
+      with_items:
+        - kubelet
+        - kubeadm
+        - kubectl
+
+    - name: enable Docker and Kubelet service
+      service:
+        name: "{{ item }}"
+        state: started       
+      with_items:
+        - docker
+        - kubelet
+
+    - name: enable IPv4 forwarding
+      sysctl:
+        name: net.bridge.bridge-nf-call-iptables
+        value: 1
+        state: present
+        reload: yes
+
