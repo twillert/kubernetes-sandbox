@@ -40,6 +40,7 @@
       service:
         name: "{{ item }}"
         state: started       
+        enabled: yes
       with_items:
         - docker
         - kubelet
@@ -50,4 +51,17 @@
         value: 1
         state: present
         reload: yes
+
+- hosts: kube-master
+  tasks:
+    - name: copy config files to master
+      copy:
+        src: "files/{{ item }}"
+        dest: "/root/{{ item }}"
+      with_items:
+        - calico-3.0.yaml
+        - kubeadm.config
+
+
+
 
