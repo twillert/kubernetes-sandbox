@@ -10,7 +10,7 @@
     image:		ami-194cdc76	# RHEL 7.4
     region:		eu-central-1
     subnet:		subnet-a2a831d8
-    count:              3
+    #count:              3
   tasks:
     - name: Launch instance
       ec2:
@@ -24,7 +24,7 @@
          assign_public_ip: yes
          instance_tags:
            owner: thomas
-         count: "{{ count }}"
+         count: 3
       register: ec2
 
     - debug:  var=ec2.instances.public_ip

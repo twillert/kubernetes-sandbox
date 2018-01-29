@@ -1,0 +1,14 @@
+#
+# set thomas_k8s_version_string variable from command line like this:
+#   -e thomas_k8s_version_string=v1.9.2
+#
+---
+- name: testing Ansible templates
+  hosts: localhost
+  tasks:
+    - setup:
+    - debug: var=ansible_default_ipv4.address
+    - template:
+        src: templates/kubeadm.config.template
+        dest: /tmp/kubeadm.config
+
