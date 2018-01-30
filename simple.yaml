@@ -1,17 +1,10 @@
 #
 # Create a simple Kubernetes cluster:
-#   - 1x Master (etcd too)
+#   - 1x Master (+ etcd)
 #   - 2x Worker nodes
 #
 ---
 - hosts: kube-master:kube-node
-  vars:
-    keypair:		thomas_internet_home
-    instance_type:	t2.medium
-    security_group:	thomas_internet_ssh
-    #image:		ami-5652ce39	# Amazon Linux
-    image:		ami-194cdc76	# RHEL 7.4
-
   tasks:
     - name: setup Kubernetes RPM repository
       copy:
@@ -36,6 +29,11 @@
         - kubeadm
         - kubectl
 
+    - name: customise kubelet service
+      copy:
+        src: files/10-kubeadm.conf
+        dest: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+
     - name: enable Docker and Kubelet service
       service:
         name: "{{ item }}"
@@ -52,7 +50,18 @@
         state: present
         reload: yes
 
+    - name: prepare for Calico networking
+      file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - /etc/cni
+        - /etc/cni/net.d
+
 - hosts: kube-master
+  vars:
+    k8s_version_string: v1.9.2
+
   tasks:
     - name: copy config files to master
       copy:
@@ -60,8 +69,13 @@
         dest: "/root/{{ item }}"
       with_items:
         - calico-3.0.yaml
-        - kubeadm.config
 
+    - name: prepare kubeadm.config on master
+      template:
+        src: templates/kubeadm.config.template
+        dest: /root/kubeadm.config
 
+#    - name: create cluster
+#      shell: kubeadm init --config /root/kubeadm.config
 
 
