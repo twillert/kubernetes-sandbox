@@ -1,0 +1,10 @@
+#
+# Reset all server - will wipe your existing K8S cluster
+#
+---
+- hosts: kube-master:kube-node
+  gather_facts: no
+  tasks:
+    - name: reset cluster
+      shell: kubeadm reset
+
