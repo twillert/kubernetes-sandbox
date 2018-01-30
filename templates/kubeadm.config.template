@@ -14,11 +14,11 @@ etcd:
   image: ""
   keyFile: ""
 imageRepository: googlecontainerregistry.artifactory.mydomain.io/google_containers
-kubernetesVersion: {{ thomas_k8s_version_string }}
+kubernetesVersion: {{ k8s_version_string }}
 networking:
   dnsDomain: cluster.local
   podSubnet: 10.40.0.0/16
-  serviceSubnet: 10.40.41.0/24
+  serviceSubnet: 10.41.0.0/16
 nodeName: {{ ansible_hostname }}
 token: ""
 tokenTTL: 24h0m0s
