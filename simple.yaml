@@ -61,21 +61,35 @@
 - hosts: kube-master
   vars:
     k8s_version_string: v1.9.2
-
   tasks:
-    - name: copy config files to master
-      copy:
-        src: "files/{{ item }}"
+    - name: Generate cluster token
+      shell: /bin/kubeadm token generate
+      register: kubeadm_token_generate
+
+    - set_fact: kubeadm_token={{ kubeadm_token_generate.stdout }}
+
+    - name: prepare kubeadm.config and calico.yaml on master
+      template:
+        src: "templates/{{ item }}"
         dest: "/root/{{ item }}"
       with_items:
+        - kubeadm.config
         - calico-3.0.yaml
-
-    - name: prepare kubeadm.config on master
-      template:
-        src: templates/kubeadm.config.template
-        dest: /root/kubeadm.config
 
 #    - name: create cluster
 #      shell: kubeadm init --config /root/kubeadm.config
 
+#    - name: Create cluster network
+#      command: kubectl create -f /root/calico-3.0.yaml
+#      environment:
+#        KUBECONFIG: /etc/kubernetes/admin.conf
+
+- hosts: kube-node
+  tasks:
+     #- debug: var=hostvars.master.kubeadm_token
+     - debug: var=hostvars[groups]
+#    - set_fact: kubeadm_token="{{ hostvars['master'][0]['kubeadm_token'] }}"
+
+#    - name: Join cluster
+#      shell: kubeadm join "{{ groups['master'][0] }}:6443 --token {{ hostvars[groups['master'][0]]['kubeadm_token'] }}"
 

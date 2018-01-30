@@ -1,7 +1,7 @@
 [all]
-master ansible_host=ec2-35-156-73-228.eu-central-1.compute.amazonaws.com
-node1  ansible_host=ec2-35-157-130-64.eu-central-1.compute.amazonaws.com
-node2  ansible_host=ec2-18-196-193-131.eu-central-1.compute.amazonaws.com
+master ansible_host=ec2-18-196-18-244.eu-central-1.compute.amazonaws.com
+node1  ansible_host=ec2-35-156-208-122.eu-central-1.compute.amazonaws.com
+node2  ansible_host=ec2-18-194-102-194.eu-central-1.compute.amazonaws.com
 
 [all:vars]
 ansible_user=ec2-user
