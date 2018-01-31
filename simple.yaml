@@ -76,20 +76,23 @@
         - kubeadm.config
         - calico-3.0.yaml
 
-#    - name: create cluster
-#      shell: kubeadm init --config /root/kubeadm.config
+    - name: create cluster
+      shell: kubeadm init --config /root/kubeadm.config
 
-#    - name: Create cluster network
-#      command: kubectl create -f /root/calico-3.0.yaml
-#      environment:
-#        KUBECONFIG: /etc/kubernetes/admin.conf
+    - name: Create cluster network
+      command: kubectl create -f /root/calico-3.0.yaml
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
 
 - hosts: kube-node
   tasks:
-     #- debug: var=hostvars.master.kubeadm_token
-     - debug: var=hostvars[groups]
-#    - set_fact: kubeadm_token="{{ hostvars['master'][0]['kubeadm_token'] }}"
+    - set_fact: kubeadm_token="{{ hostvars['master']['kubeadm_token'] }}"
+    - set_fact: cluster_name="{{ hostvars['master']['ansible_host'] }}"
+
+    - debug: var=kubeadm_token
+    - debug: var=cluster_name
+    - debug: msg="kubeadm join --token {{ kubeadm_token }} --discovery-token-unsafe-skip-ca-verification {{ cluster_name }}:6443"
 
 #    - name: Join cluster
-#      shell: kubeadm join "{{ groups['master'][0] }}:6443 --token {{ hostvars[groups['master'][0]]['kubeadm_token'] }}"
+#      shell: "kubeadm join --token {{ kubeadm_token }} --discovery-token-unsafe-skip-ca-verification {{ cluster_name }}:6443"
 
