@@ -7,8 +7,9 @@ if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
 
-export AWS_ACCESS_KEY=******
-export AWS_SECRET_KEY=******
+export AWS_SECRET_KEY=
+export AWS_ACCESS_KEY=
+
 export EC2_REGION=eu-central-1
 export ANSIBLE_HOST_KEY_CHECKING=False
 
@@ -33,7 +34,7 @@ export HISTCONTROL=ignoreboth
 export Color_Off="\033[0m"
 export Red="\033[0;31m"
 export Green="\033[0;32m"
-export Purple="033[0;35"
+export Purple="\033[0;35"
 
 # set up command prompt
 function __prompt_command()
@@ -43,9 +44,6 @@ function __prompt_command()
     PS1=""
  
     if [ $EXIT -eq 0 ]; then PS1+="\[$Green\][\!]\[$Color_Off\] "; else PS1+="\[$Red\][\!]\[$Color_Off\] "; fi
- 
-    # debian chroot stuff (take it or leave it)
-    PS1+="${debian_chroot:+($debian_chroot)}"
  
     # basic information (user@host:path)
     PS1+="\[$BRed\]\u\[$Color_Off\]@\[$BRed\]\h\[$Color_Off\]:\[$BPurple\]\w\[$Color_Off\] "
