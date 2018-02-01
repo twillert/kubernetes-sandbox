@@ -5,7 +5,8 @@
   vars:
     keypair:		thomas_internet_home
     instance_type:	t2.medium
-    security_group:	thomas_internet_ssh
+    #security_group:	thomas_internet_ssh
+    security_group:	thomas_internet_all_open
     #image:		ami-5652ce39	# Amazon Linux
     image:		ami-194cdc76	# RHEL 7.4
     region:		eu-central-1

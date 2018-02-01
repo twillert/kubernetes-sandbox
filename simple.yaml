@@ -93,6 +93,6 @@
     - debug: var=cluster_name
     - debug: msg="kubeadm join --token {{ kubeadm_token }} --discovery-token-unsafe-skip-ca-verification {{ cluster_name }}:6443"
 
-#    - name: Join cluster
-#      shell: "kubeadm join --token {{ kubeadm_token }} --discovery-token-unsafe-skip-ca-verification {{ cluster_name }}:6443"
+    - name: Join cluster
+      shell: "kubeadm join --token {{ kubeadm_token }} --discovery-token-unsafe-skip-ca-verification {{ cluster_name }}:6443"
 
