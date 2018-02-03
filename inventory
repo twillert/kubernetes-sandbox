@@ -1,7 +1,11 @@
 [all]
-master ansible_host=ec2-18-195-222-99.eu-central-1.compute.amazonaws.com
-node1  ansible_host=ec2-18-196-144-229.eu-central-1.compute.amazonaws.com
-node2  ansible_host=ec2-52-58-128-48.eu-central-1.compute.amazonaws.com
+master ansible_host=ec2-52-28-194-29.eu-central-1.compute.amazonaws.com
+node1  ansible_host=ec2-18-196-152-64.eu-central-1.compute.amazonaws.com
+node2  ansible_host=ec2-52-57-130-172.eu-central-1.compute.amazonaws.com
+node3  ansible_host=ec2-52-28-193-253.eu-central-1.compute.amazonaws.com
+node4  ansible_host=ec2-18-196-159-94.eu-central-1.compute.amazonaws.com
+node5  ansible_host=ec2-35-156-205-15.eu-central-1.compute.amazonaws.com
+node6  ansible_host=ec2-18-196-132-70.eu-central-1.compute.amazonaws.com
 
 [all:vars]
 ansible_user=ec2-user
@@ -16,6 +20,10 @@ master
 [kube-node]
 node1
 node2
+node3
+node4
+node5
+node6
 
 [k8s-cluster:children]
 kube-node

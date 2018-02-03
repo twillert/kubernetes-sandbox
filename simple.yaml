@@ -4,7 +4,7 @@
 #   - 2x Worker nodes
 #
 ---
-- hosts: kube-master:kube-node
+- hosts: tag_role_master:tag_role_node
   tasks:
     - name: setup Kubernetes RPM repository
       copy:
@@ -58,7 +58,7 @@
         - /etc/cni
         - /etc/cni/net.d
 
-- hosts: kube-master
+- hosts: tag_role_master
   vars:
     k8s_version_string: v1.9.2
   tasks:
@@ -67,6 +67,7 @@
       register: kubeadm_token_generate
 
     - set_fact: kubeadm_token={{ kubeadm_token_generate.stdout }}
+    - set_fact: master={{ inventory_hostname }}
 
     - name: prepare kubeadm.config and calico.yaml on master
       template:
@@ -84,10 +85,10 @@
       environment:
         KUBECONFIG: /etc/kubernetes/admin.conf
 
-- hosts: kube-node
+- hosts: tag_role_node
   tasks:
-    - set_fact: kubeadm_token="{{ hostvars['master']['kubeadm_token'] }}"
-    - set_fact: cluster_name="{{ hostvars['master']['ansible_host'] }}"
+    - set_fact: kubeadm_token="{{ hostvars["{{ master }}"]['kubeadm_token'] }}"
+    - set_fact: cluster_name="{{ hostvars["{{ master }}"]['ansible_host'] }}"
 
     - debug: var=kubeadm_token
     - debug: var=cluster_name

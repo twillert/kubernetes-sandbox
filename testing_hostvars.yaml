@@ -2,7 +2,7 @@
 # Testing Ansible hostvars
 #
 ---
-- hosts: kube-master
+- hosts: tag_role_master
   tasks:
     - name: Generate cluster token
       shell: /bin/kubeadm token generate
@@ -10,14 +10,6 @@
 
     - set_fact: kubeadm_token={{ kubeadm_token_generate.stdout }}
 
-- hosts: kube-node
+- hosts: tag_role_node
   tasks:
-     #- debug: var=hostvars.master.kubeadm_token
-     #- debug: var=hostvars['master']
-     - debug: var=hostvars['master']['ansible_host']
-     - debug: var=hostvars['master']['kubeadm_token']
-#    - set_fact: kubeadm_token="{{ hostvars['master'][0]['kubeadm_token'] }}"
-
-#    - name: Join cluster
-#      shell: kubeadm join "{{ groups['master'][0] }}:6443 --token {{ hostvars[groups['master'][0]]['kubeadm_token'] }}"
-
+    - debug: var=groups["tag_role_master"][0]

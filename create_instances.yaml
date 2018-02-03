@@ -3,15 +3,17 @@
   hosts: localhost
   gather_facts: False
   vars:
-    keypair:		thomas_internet_home
-    instance_type:	t2.medium
-    #security_group:	thomas_internet_ssh
-    security_group:	thomas_internet_all_open
-    #image:		ami-5652ce39	# Amazon Linux
-    image:		ami-194cdc76	# RHEL 7.4
-    region:		eu-central-1
-    subnet:		subnet-a2a831d8
-    #count:              3
+    keypair:	     thomas_internet_home
+    instance_type:   t2.medium
+    #security_group: thomas_internet_ssh
+    security_group:  thomas_internet_all_open
+    #image:	     ami-5652ce39	# Amazon Linux
+    image:	     ami-194cdc76	# RHEL 7.4
+    region:	     eu-central-1
+    subnet:	     subnet-a2a831d8
+    count:           3
+    owner:           thomas
+    role:            node
   tasks:
     - name: Launch instance
       ec2:
@@ -24,8 +26,9 @@
          vpc_subnet_id: "{{ subnet }}"
          assign_public_ip: yes
          instance_tags:
-           owner: thomas
-         count: 3
+           owner: "{{ owner }}"
+           role:  "{{ role }}"
+         count: "{{ count }}"
       register: ec2
 
     - debug:  var=ec2.instances.public_ip
