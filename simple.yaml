@@ -87,8 +87,9 @@
 
 - hosts: tag_role_node
   tasks:
-    - set_fact: kubeadm_token="{{ hostvars["{{ master }}"]['kubeadm_token'] }}"
-    - set_fact: cluster_name="{{ hostvars["{{ master }}"]['ansible_host'] }}"
+    - set_fact: master="{{ groups['tag_role_master'][0] }}"
+    - set_fact: kubeadm_token="{{ hostvars[ master]['kubeadm_token'] }}"
+    - set_fact: cluster_name="{{ hostvars[master]['ansible_host'] }}"
 
     - debug: var=kubeadm_token
     - debug: var=cluster_name
