@@ -1,0 +1,19 @@
+#
+# Setup Kubernetes dashboard
+#
+---
+- hosts: tag_role_master
+  vars:
+    dashboard_input_file: kubernetes-dashboard-v1.8.2.yaml
+  tasks:
+    - name: setup Kubernetes Dashboard
+      copy:
+        src:  "{{ dashboard_input_file }}"
+        dest: "/root/{{ dashboard_input_file }}"
+
+    - name: create dashboard
+      shell: "kubectl create -f /root/{{ dashboard_input_file }}"
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
+
+        
