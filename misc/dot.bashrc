@@ -7,20 +7,14 @@ if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
 
-export AWS_SECRET_KEY=
-export AWS_ACCESS_KEY=
-
-export EC2_REGION=eu-central-1
 export ANSIBLE_HOST_KEY_CHECKING=False
 
-# to support ec2.py
-export AWS_REGION=${EC2_REGION}
-export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY}
-export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_KEY}
+export AWS_REGION=eu-central-1
+export AWS_ACCESS_KEY_ID=******
+export AWS_SECRET_ACCESS_KEY=******
 
 export ANSIBLE_PRIVATE_KEY_FILE=/root/.ssh/id_rsa_thomas_home
 export ANSIBLE_REMOTE_USER=ec2-user
-
 
 export HISTTIMEFORMAT="%d.%m.%y %T "
 export HISTCONTROL=ignoredups:erasedups

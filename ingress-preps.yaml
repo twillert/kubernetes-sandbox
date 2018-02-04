@@ -3,6 +3,19 @@
 # https://kubernetes.io/docs/concepts/services-networking/ingress/
 #
 ---
+- hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: get info on master node
+      ec2_instance_facts:
+        filters:
+          instance-state-name: running
+          "tag:owner": thomas
+          "tag:role": master
+      register: ec2
+
+    - set_fact: master_public_dns="{{ ec2['instances'][0]['public_dns_name'] }}"
+
 - hosts: tag_role_master
   gather_facts: no
   tasks:
@@ -28,8 +41,17 @@
         - 60_rbac.yaml                   # prepare rbac role and binding
         - 70_with-rbac.yaml              # install 'ingress-nginx' deployment
         - 80_service-nodeport.yaml       # add service for the deployment
-        - 80_configmap.yaml              # create configmap, use for custom settings
+        - 90_configmap.yaml              # create configmap, use for custom settings
 
+    - set_fact: master_public_dns="{{ hostvars['localhost']['master_public_dns'] }}"
 
+    - name: copy dashboard input file
+      template:
+        src: templates/dashboard-ingress.template
+        dest: /root/dashboard-ingress.template
 
-      
+    - name: create Ingress for dashboard
+      shell: "kubectl apply -f /root/dashboard-ingress.template"
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
+

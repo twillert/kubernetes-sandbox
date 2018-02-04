@@ -1,5 +1,5 @@
 ---
-- name: list info about master
+- name: list all instances with tag owner=thomas
   hosts: localhost
   gather_facts: False
   tasks:
@@ -8,7 +8,6 @@
         filters:
           instance-state-name: running
           "tag:owner": thomas
-          "tag:role": master
       register: ec2
 
     - set_fact:
