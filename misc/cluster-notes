@@ -1,0 +1,5 @@
+Things to think about:
+
+- multi-tenancy: namespace, auth, user/team mangement
+- resource seperatation, planning, monitoring
+- wildcard Ingress for teams/projects

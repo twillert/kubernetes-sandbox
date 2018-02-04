@@ -1,0 +1,35 @@
+#
+# Add dependencies for Ingress
+# https://kubernetes.io/docs/concepts/services-networking/ingress/
+#
+---
+- hosts: tag_role_master
+  gather_facts: no
+  tasks:
+    - name: copy Ingress yaml config files to master node
+      copy:
+        src:  ingress-files/
+        dest: /root/ingress-files
+
+    - name: create Kubernetes Ingress objects
+      shell: "kubectl apply -f /root/ingress-files/{{ item }}"
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
+      with_items:
+        - 10_namespace.yaml              # Add 'ingress-nginx' namespace.
+        - 20_default-backend.yaml        # Add 'default-http-backend' deployment.
+                                         # This is an nginx webserver to serve all requests
+                                         # not known to the Ingress Controller. These will
+                                         # get a 404 HTTP response.
+                                         # Also add a 'default-http-backend' service.
+        - 30_configmap.yaml              # Add 'nginx-configuration' configmap.
+        - 40_tcp-services-configmap.yaml # Add 'tcp-services' configmap.
+        - 50_udp-services-configmap.yaml # Add 'udp-services' configmap.
+        - 60_rbac.yaml                   # prepare rbac role and binding
+        - 70_with-rbac.yaml              # install 'ingress-nginx' deployment
+        - 80_service-nodeport.yaml       # add service for the deployment
+        - 80_configmap.yaml              # create configmap, use for custom settings
+
+
+
+      
