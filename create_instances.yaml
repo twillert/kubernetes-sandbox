@@ -31,8 +31,6 @@
          count: "{{ count }}"
       register: ec2
 
-    - debug:  var=ec2.instances.public_ip
-
     - name: Add new instance to host group
       add_host:
         hostname: "{{ item.public_ip }}"
@@ -48,20 +46,4 @@
         state: started
       with_items: "{{ ec2.instances }}"
 
-#- name: Configure instance(s)
-#  hosts: launched
-#  become: True
-#  gather_facts: True
-#  roles:
-#    - my_awesome_role
-#    - my_awesome_test
-#
-#- name: Terminate instances
-#  hosts: localhost
-#  connection: local
-#  tasks:
-#    - name: Terminate instances that were previously launched
-#      ec2:
-#        state: 'absent'
-#        instance_ids: '{{ ec2.instance_ids }}'
 
