@@ -19,6 +19,12 @@
 - hosts: tag_role_master
   gather_facts: no
   tasks:
+    - name: increase node port range
+      lineinfile:
+        path:        /etc/kubernetes/manifests/kube-apiserver.yaml
+        line:        '    - --service-node-port-range=80-32767'
+        insertafter: '- kube-apiserver'
+
     - name: copy Ingress yaml config files to master node
       copy:
         src:  ingress-files/
@@ -48,20 +54,20 @@
     - name: copy dashboard input file for ingress
       template:
         src: templates/dashboard-ingress.template
-        dest: /root/dashboard-ingress.template
+        dest: /root/dashboard-ingress.yaml
 
     - name: create Ingress for dashboard
-      shell: "kubectl apply -f /root/dashboard-ingress.template"
+      shell: "kubectl apply -f /root/dashboard-ingress.yaml"
       environment:
         KUBECONFIG: /etc/kubernetes/admin.conf
 
     - name: copy Dashboard deployment file
       copy:
-        src: files/kubernetes-dashboard-v1.8.2.yaml
-        dest: /root/kubernetes-dashboard-v1.8.2.yaml
+        src: files/kubernetes-dashboard-v1.8.0-without-https.yaml
+        dest: /root/kubernetes-dashboard-v1.8.0-without-https.yaml
 
     - name: create Dashboard deployment
-      shell: kubectl apply -f /root/kubernetes-dashboard-v1.8.2.yaml
+      shell: kubectl apply -f /root/kubernetes-dashboard-v1.8.0-without-https.yaml
       environment:
         KUBECONFIG: /etc/kubernetes/admin.conf
 

@@ -8,7 +8,7 @@
         filters:
           instance-state-name: running
           "tag:owner": thomas
-          "tag:role": master
+          "tag:role": node
       register: ec2
 
     - set_fact:
@@ -24,3 +24,8 @@
     - name: public DNS
       debug: var="ec2.instances.{{ item }}.public_dns_name"
       with_sequence: start=0 count="{{ ec2_num }}"
+
+    - name: private IPs
+      debug: var="ec2.instances.{{ item }}.private_ip_address"
+      with_sequence: start=0 count="{{ ec2_num }}"
+
