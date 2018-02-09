@@ -63,11 +63,19 @@
 
     - name: copy Dashboard deployment file
       copy:
-        src: files/kubernetes-dashboard-v1.8.0-without-https.yaml
-        dest: /root/kubernetes-dashboard-v1.8.0-without-https.yaml
+        src: "files/{{ item }}"
+        dest: "/root/{{ item }}"
+      with_items:
+        - dashboard-admin-not-recommended.yaml
+        - kubernetes-dashboard-v1.8.0-without-https.yaml
 
     - name: create Dashboard deployment
       shell: kubectl apply -f /root/kubernetes-dashboard-v1.8.0-without-https.yaml
       environment:
         KUBECONFIG: /etc/kubernetes/admin.conf
 
+    - name: give dashboard serviceaccount cluster-admin permissions.
+      shell: kubectl apply -f /root/kubernetes-dashboard-v1.8.0-without-https.yaml
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
+      
