@@ -1,6 +1,19 @@
-A collection of scripts to help experiment with Kubernetes and AWS instances
+# A collection of scripts to help experiment with Kubernetes and AWS instances
 
-Add to .bashrc:
+## Quickstart - will install cluster with dashboard
+
+ansible-playbook create_instances.yaml -e role=master -e count=1
+ansible-playbook create_instances.yaml -e role=node -e count=3
+ansible-playbook -b simple-cluster.yaml
+ansible-playbook -b add-dashboard-to-cluster.yaml
+
+## Requirements
+
+- a working Ansible control host with AWS credentials configured
+- working dynamic Ansible 'ec2.py' inventory script
+- setup AWS Security Group and VPC in add them to 'create_instances.yaml'
+
+AWS credentials can be configured like this:
 
 export AWS_SECRET_KEY=******
 export AWS_ACCESS_KEY=******
@@ -8,45 +21,10 @@ export EC2_REGION=eu-central-1
 
 ---
 
-If you want to use ec2.py for dynamic AWS inventory (http://docs.ansible.com/ansible/latest/intro_dynamic_inventory.html#example-aws-ec2-external-inventory-script)
+Dynamic AWS inventory 'ec2.py' (http://docs.ansible.com/ansible/latest/intro_dynamic_inventory.html#example-aws-ec2-external-inventory-script)
 
-# to support ec2.py
-export AWS_REGION=${EC2_REGION}
-export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY}
-export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_KEY}
-
-export ANSIBLE_PRIVATE_KEY_FILE=/root/.ssh/id_rsa_thomas_home
-export ANSIBLE_REMOTE_USER=ec2-user
-
-
-Get ec2.py and ec2.ini and save both in /etc/ansible:
+You can get ec2.py and ec2.ini here and save both in /etc/ansible:
 
 https://raw.githubusercontent.com/ansible/ansible/devel/contrib/inventory/ec2.ini
 https://raw.githubusercontent.com/ansible/ansible/devel/contrib/inventory/ec2.py
-
-
-
-For command line Ansible commands:
-
-ansible -i /etc/ansible/ec2.py all -m ping
-
-
----
-
-Kubeadm:
-	advestise: 10.40.0.1
-	etcd service: 10.41.0.1
-
-
-  mkdir -p $HOME/.kube
-  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-  sudo chown $(id -u):$(id -g) $HOME/.kube/config
-
-  kubeadm join --token bd29e1.bc70d7c483416415 172.16.99.32:6443 --discovery-token-ca-cert-hash sha256:b214e979d4ac00029c4f1deb80a04b6a11063dad1212771cf8b9f82b6e0fefa1
-
-
-kubectl apply -f https://docs.projectcalico.org/v3.0/getting-started/kubernetes/installation/hosted/kubeadm/1.7/calico.yaml
-
-# Fetch cluster admin config file from master
-ansible tag_role_master -m fetch -a "flat=yes src=/etc/kubernetes/admin.conf dest=admin.conf" -b
 
