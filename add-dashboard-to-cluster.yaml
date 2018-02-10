@@ -91,4 +91,4 @@
 
     - name: show URL for Dashboard
       debug:
-        msg; "Dashboard URL: http://{{ master_public_dns }}/"
+        msg: "Dashboard URL: http://{{ master_public_dns }}/"
