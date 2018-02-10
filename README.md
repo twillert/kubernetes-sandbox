@@ -1,4 +1,4 @@
-# A collection of scripts to help experiment with Kubernetes and AWS instances
+# A collection of scripts to experiment with Kubernetes on AWS
 
 ## Quickstart - will install cluster with dashboard
 
