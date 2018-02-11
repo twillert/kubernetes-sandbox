@@ -85,12 +85,6 @@
       environment:
         KUBECONFIG: /etc/kubernetes/admin.conf
 
-    - name: fetch admin.conf from cluster
-      fetch:
-        flat: yes
-        src: /etc/kubernetes/admin.conf
-        dest: admin.conf
-
     - name: create .kube directory
       file:
         path: /root/.kube
