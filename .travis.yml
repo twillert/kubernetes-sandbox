@@ -19,8 +19,8 @@ script:
   - 'sudo docker exec "$(cat ${container_id})" env ANSIBLE_FORCE_COLOR=1 ansible-playbook -v /code/simple-cluster.yaml --syntax-check'
   - 'sudo docker exec "$(cat ${container_id})" env ANSIBLE_FORCE_COLOR=1 ansible-playbook -v /code/create_instances.yaml --syntax-check'
   - 'sudo docker exec "$(cat ${container_id})" env ANSIBLE_FORCE_COLOR=1 ansible-playbook -v /code/add-dashboard-to-cluster.yaml --syntax-check'
-  - >
-     sudo docker exec "$(cat ${container_id})" cat /etc/redhat-release
-     sudo docker exec "$(cat ${container_id})" rpm -qa | sort
-     sudo docker exec "$(cat ${container_id})" yum update -y
+  - 'sudo docker exec "$(cat ${container_id})" yum update -y'
+  - 'sudo docker exec "$(cat ${container_id})" cat /etc/redhat-release'
+  - 'sudo docker exec "$(cat ${container_id})" rpm -qa | sort'
   - 'sudo docker rm -f "$(cat ${container_id})"'
+
