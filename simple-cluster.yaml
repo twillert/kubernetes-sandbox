@@ -100,6 +100,12 @@
         remote_src: yes
         src: /etc/kubernetes/admin.conf
 
+    - name: increase node port range
+      lineinfile:
+        path:        /etc/kubernetes/manifests/kube-apiserver.yaml
+        line:        '    - --service-node-port-range=80-32767'
+        insertafter: '- kube-apiserver'
+
 - hosts: tag_role_node
   tasks:
     - set_fact: master="{{ groups['tag_role_master'][0] }}"

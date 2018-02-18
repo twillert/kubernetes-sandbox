@@ -19,12 +19,6 @@
 - hosts: tag_role_master
   gather_facts: no
   tasks:
-    - name: increase node port range
-      lineinfile:
-        path:        /etc/kubernetes/manifests/kube-apiserver.yaml
-        line:        '    - --service-node-port-range=80-32767'
-        insertafter: '- kube-apiserver'
-
     - name: copy Ingress yaml config files to master node
       copy:
         src:  ingress-files/
