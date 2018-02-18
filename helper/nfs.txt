@@ -1,0 +1,4 @@
+yum install nfs-utils portmap
+systemctl start nfs-server
+exportfs *:/data
+
