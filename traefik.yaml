@@ -1,0 +1,7 @@
+#
+# Playing with Traefik
+#
+---
+- hosts: tag_role_master
+  tasks:
+    - name: traefik stuff...
