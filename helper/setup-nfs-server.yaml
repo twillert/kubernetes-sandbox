@@ -1,0 +1,22 @@
+---
+- hosts: tag_role_nfs
+  gather_facts: no
+  tasks:
+    - name: install packages
+      yum:
+        name: "{{ item }}"
+        state: installed
+      with_items:
+        - nfs-utils
+        - portmap
+
+    - name: create export
+      shell: exportfs *:/data
+
+    - name: enable nfs server
+      service:
+        name: nfs-server
+        enabled: true
+        state: started
+
+
