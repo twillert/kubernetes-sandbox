@@ -1,0 +1,21 @@
+#
+# Adding Heapster to cluster
+#
+---
+- hosts: tag_role_master
+  gather_facts: no
+  tasks:
+    - name: copy Ingress yaml config files to master node
+      copy:
+        src:  files/heapster
+        dest: /root/heapster
+
+    - name: create Heapster, Grafana and InfluxDB deployments
+      shell: "kubectl apply -f /root/heapster/{{ item }}"
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
+      with_items:
+        - heapster-rbac.yaml
+        - heapster.yaml
+        - grafana.yaml
+        - influxdb.yaml

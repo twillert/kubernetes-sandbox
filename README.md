@@ -9,6 +9,7 @@ ansible-playbook create_instances.yaml -e role=master -e count=1
 ansible-playbook create_instances.yaml -e role=node -e count=3
 ansible-playbook -b simple-cluster.yaml
 ansible-playbook -b add-dashboard-to-cluster.yaml
+ansible-playbook -b heapster-with-influxdb.yaml
 ```
 
 After completion the debug message will print the URL for your Kubernetes dashboard:
