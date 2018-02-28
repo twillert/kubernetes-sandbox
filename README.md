@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/twillert/kubernetes-sandbox.svg?branch=master)](https://travis-ci.org/twillert/kubernetes-sandbox)
+
 # A collection of scripts to experiment with Kubernetes on AWS
 
 ## Quickstart - will install cluster with dashboard
