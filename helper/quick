@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo "### Creating VMs ###"
+ansible-playbook create_instances.yaml -e role=master -e count=1 &
+ansible-playbook create_instances.yaml -e role=node -e count=3 &
+ansible-playbook create_instances.yaml -e role=nfs -e count=1 &
+wait
+echo "### done ###"
+
+
