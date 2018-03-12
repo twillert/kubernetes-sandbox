@@ -73,16 +73,6 @@
       environment:
         KUBECONFIG: /etc/kubernetes/admin.conf
       
-    - name: copy files for Heapster+InfluxDB+Grafana
-      copy:
-        src: files/heapster
-        dest: /root/
-
-    - name: install Heapster+InfluxDB+Grafana
-      shell: kubectl create -f grafana.yaml -f heapster-rbac.yaml -f heapster.yaml -f influxdb.yaml
-      args:
-        chdir: /root/heapster
-
     - name: show URL for Dashboard
       debug:
         msg: "Dashboard URL: http://{{ master_public_dns }}/"
