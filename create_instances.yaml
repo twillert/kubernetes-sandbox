@@ -11,6 +11,7 @@
     image:	     ami-194cdc76	# RHEL 7.4
     region:	     eu-central-1
     subnet:	     subnet-a2a831d8
+    zone:        eu-central-1b
     count:           3
     owner:           thomas
     role:            node
@@ -29,6 +30,7 @@
            owner: "{{ owner }}"
            role:  "{{ role }}"
          count: "{{ count }}"
+         zone: "{{ zone }}"
       register: ec2
 
     - name: Add new instance to host group
