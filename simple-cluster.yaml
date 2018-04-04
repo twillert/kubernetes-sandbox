@@ -25,9 +25,9 @@
         name: "{{  item }}"
         state: installed
       with_items:
-        - kubelet
-        - kubeadm
-        - kubectl
+        - kubelet-1.9.2
+        - kubeadm-1.9.2
+        - kubectl-1.9.2
 
     - name: customise kubelet service
       copy:
@@ -75,13 +75,13 @@
         dest: "/root/{{ item }}"
       with_items:
         - kubeadm.config
-        - calico-3.0.yaml
+        - calico-2.6.8.yaml
 
     - name: create cluster
       shell: kubeadm init --config /root/kubeadm.config
 
     - name: Create cluster network
-      command: kubectl create -f /root/calico-3.0.yaml
+      command: kubectl create -f /root/calico-2.6.8.yaml
       environment:
         KUBECONFIG: /etc/kubernetes/admin.conf
 
