@@ -6,16 +6,76 @@
     keypair:	     thomas_internet_home
     instance_type:   t2.medium
     #security_group: thomas_internet_ssh
-    security_group:  thomas_internet_all_open
+    #security_group:  thomas_internet_all_open
     #image:	     ami-5652ce39	# Amazon Linux
     image:	     ami-194cdc76	# RHEL 7.4
     region:	     eu-central-1
-    subnet:	     subnet-a2a831d8
+    #subnet:	     subnet-a2a831d8
     zone:        eu-central-1b
     count:           3
     owner:           thomas
     role:            node
   tasks:
+    - ec2_vpc_net:
+        state:        present
+        cidr_block:   172.16.0.0/16
+        dns_hostnames: yes
+        region:       "{{ region }}"
+        name:         thomas_vpc
+        tags:
+          owner:      "{{ owner }}"
+        multi_ok:     false
+      register:       thomas_vpc
+
+    - name: create igw
+      ec2_vpc_igw:
+        vpc_id: "{{ thomas_vpc.vpc.id }}"
+        region: "{{ region }}"
+        state: present
+        tags:
+          owner: "{{ owner }}"
+      register: thomas_igw
+
+    - name: create subnet 172.16.0.0/24
+      ec2_vpc_subnet:
+        state: present
+        az: "{{ zone }}"
+        cidr: 172.16.0.0/24
+        map_public: yes
+        region: "{{ region }}"
+        tags:
+          owner: "{{ owner }}"
+        vpc_id: "{{ thomas_vpc.vpc.id }}"
+      register: thomas_subnet
+
+    - name: Set up public subnet route table
+      ec2_vpc_route_table:
+        vpc_id: "{{ thomas_vpc.vpc.id }}"
+        region: "{{ region }}"
+        tags:
+          Owner: "{{ owner }}"
+        subnets:
+          - "{{ thomas_subnet.subnet.id }}"
+        routes:
+          - dest: 0.0.0.0/0
+            gateway_id: "{{ thomas_igw.gateway_id }}"
+      register: thomas_route_table
+
+    - name:set up security group
+      ec2_group:
+        description: Thomas Security Group, all open
+        name: thomas_security_group
+        region: "{{ region }}"
+        tags:
+          Owner: "{{ owner }}"
+        state: present
+        vpc: "{{ thomas_vpc.vpc.id }}"
+        rules:
+          
+
+
+    - fail:
+
     - name: Launch instance
       ec2:
          key_name: "{{ keypair }}"
