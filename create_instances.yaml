@@ -5,14 +5,12 @@
   vars:
     keypair:	     thomas_internet_home
     instance_type:   t2.medium
-    #security_group: thomas_internet_ssh
-    #security_group:  thomas_internet_all_open
-    #image:	     ami-5652ce39	# Amazon Linux
+    security_group: default
     image:	     ami-194cdc76	# RHEL 7.4
+    #image:	     ami-dd3c0f36	# CENTOS 7
     region:	     eu-central-1
-    #subnet:	     subnet-a2a831d8
     zone:        eu-central-1b
-    count:           3
+    count:           1
     owner:           thomas
     role:            node
   tasks:
@@ -61,21 +59,6 @@
             gateway_id: "{{ thomas_igw.gateway_id }}"
       register: thomas_route_table
 
-    - name:set up security group
-      ec2_group:
-        description: Thomas Security Group, all open
-        name: thomas_security_group
-        region: "{{ region }}"
-        tags:
-          Owner: "{{ owner }}"
-        state: present
-        vpc: "{{ thomas_vpc.vpc.id }}"
-        rules:
-          
-
-
-    - fail:
-
     - name: Launch instance
       ec2:
          key_name: "{{ keypair }}"
@@ -84,7 +67,7 @@
          image: "{{ image }}"
          wait: true
          region: "{{ region }}"
-         vpc_subnet_id: "{{ subnet }}"
+         vpc_subnet_id: "{{ thomas_subnet.subnet.id }}"
          assign_public_ip: yes
          instance_tags:
            owner: "{{ owner }}"
