@@ -1,0 +1,11 @@
+kind: InitConfiguration
+apiVersion: kubeadm.k8s.io/v1beta1
+localAPIEndpoint:
+  advertiseAddress: {{ ansible_default_ipv4.address }}
+  bindPort: 6443
+---
+kind: ClusterConfiguration
+apiServer:
+  timeoutForControlPlane: 4m0s
+apiVersion: kubeadm.k8s.io/v1beta1
+kubernetesVersion: v1.13.0

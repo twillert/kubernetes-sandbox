@@ -5,34 +5,24 @@
 #
 ---
 - hosts: tag_role_master:tag_role_node
+  tags:
+    - prepare_all
+  vars:
+    - version: 1.13.4
+  vars_files:
+    - vars/kubernetes-{version}.yml
   tasks:
     - name: setup Kubernetes RPM repository
       copy:
         src: files/k8s.repo
         dest: /etc/yum.repos.d/kubernetes.repo
 
-    - shell: yum-config-manager --enable rhui-REGION-rhel-server-extras
-
     - selinux: state=disabled
-
-    - name: install Docker
-      yum:
-        name: docker
-        state: installed
 
     - name: install K8S packages
       yum:
-        name: "{{  item }}"
+        name: "{{  rpm_list }}"
         state: installed
-      with_items:
-        - kubelet-1.9.2
-        - kubeadm-1.9.2
-        - kubectl-1.9.2
-
-    - name: customise kubelet service
-      copy:
-        src: files/10-kubeadm.conf
-        dest: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
 
     - name: enable Docker and Kubelet service
       service:
@@ -59,8 +49,6 @@
         - /etc/cni/net.d
 
 - hosts: tag_role_master
-  vars:
-    k8s_version_string: v1.9.2
   tasks:
     - name: Generate cluster token
       shell: /bin/kubeadm token generate
@@ -74,7 +62,7 @@
         src: "templates/{{ item }}"
         dest: "/root/{{ item }}"
       with_items:
-        - kubeadm.config
+        - kubeadm_init_{{ version }}.template
         - calico-2.6.8.yaml
 
     - name: create cluster
@@ -84,27 +72,6 @@
       command: kubectl create -f /root/calico-2.6.8.yaml
       environment:
         KUBECONFIG: /etc/kubernetes/admin.conf
-
-    - name: create .kube directory
-      file:
-        path: /root/.kube
-        state: directory
-        owner: root
-        group: root
-        mode: 0600
-
-    - name: create ./kube/config
-      copy:
-        dest: /root/.kube/config
-        mode: 0600
-        remote_src: yes
-        src: /etc/kubernetes/admin.conf
-
-    - name: increase node port range
-      lineinfile:
-        path:        /etc/kubernetes/manifests/kube-apiserver.yaml
-        line:        '    - --service-node-port-range=80-32767'
-        insertafter: '- kube-apiserver'
 
 - hosts: tag_role_node
   tasks:
