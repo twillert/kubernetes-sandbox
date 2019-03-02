@@ -48,3 +48,4 @@ You can get ec2.py and ec2.ini here and save both in /etc/ansible:
 https://raw.githubusercontent.com/ansible/ansible/devel/contrib/inventory/ec2.ini
 https://raw.githubusercontent.com/ansible/ansible/devel/contrib/inventory/ec2.py
 
+
