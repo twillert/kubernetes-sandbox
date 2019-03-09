@@ -10,7 +10,7 @@
   vars:
     - version: 1.13.4
   vars_files:
-    - vars/kubernetes-{version}.yml
+    - vars/kubernetes-{{version}}.yaml
   tasks:
     - name: setup Kubernetes RPM repository
       copy:
