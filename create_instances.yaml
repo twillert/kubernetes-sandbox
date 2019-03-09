@@ -5,15 +5,15 @@
   vars:
     keypair:	     thomas_internet_home
     instance_type:   t2.medium
-    security_group: default
+    security_group:  default
     #image:	     ami-194cdc76	# RHEL 7.4
     #image:	     ami-dd3c0f36	# CENTOS 7
-    image:       ami-04cf43aca3e6f3de3 # CENTOS 7 @ 02.03.2019
+    image:           ami-04cf43aca3e6f3de3 # CENTOS 7 @ 02.03.2019
     region:	     eu-central-1
-    zone:        eu-central-1b
+    zone:            eu-central-1b
     count:           1
     owner:           thomas
-    role:            node
+    role:            master
   tasks:
     - ec2_vpc_net:
         state:        present
