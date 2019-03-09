@@ -7,8 +7,6 @@
 - hosts: tag_role_master:tag_role_node
   tags:
     - prepare_all
-  vars:
-    - version: 1.13.4
   vars_files:
     - vars/kubernetes-{{version}}.yaml
   tasks:
@@ -62,14 +60,14 @@
         src: "templates/{{ item }}"
         dest: "/root/{{ item }}"
       with_items:
-        - kubeadm_init_{{ version }}.template
-        - calico-2.6.8.yaml
+        - kubeadm_init_{{ version }}
+        - calico-3.5.2-recommended.yaml
 
     - name: create cluster
-      shell: kubeadm init --config /root/kubeadm.config
+      shell: kubeadm init --config /root/kubeadm_init_"{{ version }}"
 
     - name: Create cluster network
-      command: kubectl create -f /root/calico-2.6.8.yaml
+      command: kubectl create -f /root/calico-3.5.2-recommended.yaml
       environment:
         KUBECONFIG: /etc/kubernetes/admin.conf
 
