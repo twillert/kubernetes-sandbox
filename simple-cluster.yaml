@@ -8,12 +8,13 @@
   tags:
     - prepare_all
   vars_files:
-    - vars/kubernetes-{{version}}.yaml
+    - "vars/kubernetes-{{ version }}.yaml"
   tasks:
     - name: setup Kubernetes RPM repository
       copy:
         src: files/k8s.repo
         dest: /etc/yum.repos.d/kubernetes.repo
+      tags: setup_repo
 
     - selinux: state=disabled
 
