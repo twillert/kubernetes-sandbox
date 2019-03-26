@@ -47,6 +47,12 @@
         - /etc/cni
         - /etc/cni/net.d
 
+    - name: restart kubelet
+      service:
+        name: kubelet
+        state: restarted
+        enabled: yes
+
 - hosts: tag_role_master
   tasks:
     - name: Generate cluster token
