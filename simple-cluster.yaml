@@ -23,15 +23,6 @@
         name: "{{  rpm_list }}"
         state: installed
 
-    - name: enable Docker and Kubelet service
-      service:
-        name: "{{ item }}"
-        state: started       
-        enabled: yes
-      with_items:
-        - docker
-        - kubelet
-
     - name: enable IPv4 forwarding
       sysctl:
         name: net.bridge.bridge-nf-call-iptables
@@ -47,11 +38,14 @@
         - /etc/cni
         - /etc/cni/net.d
 
-    - name: restart kubelet
+    - name: enable and restart Docker and Kubelet service
       service:
-        name: kubelet
-        state: restarted
+        name: "{{ item }}"
+        state: restarted       
         enabled: yes
+      with_items:
+        - docker
+        - kubelet
 
 - hosts: tag_role_master
   tasks:
