@@ -23,13 +23,6 @@
         name: "{{  rpm_list }}"
         state: installed
 
-    - name: enable IPv4 forwarding
-      sysctl:
-        name: net.bridge.bridge-nf-call-iptables
-        value: 1
-        state: present
-        reload: yes
-
     - name: prepare for Calico networking
       file:
         path: "{{ item }}"
@@ -46,6 +39,13 @@
       with_items:
         - docker
         - kubelet
+
+    - name: enable IPv4 forwarding
+      sysctl:
+        name: net.bridge.bridge-nf-call-iptables
+        value: 1
+        state: present
+        reload: yes
 
 - hosts: tag_role_master
   tasks:
