@@ -2,5 +2,5 @@ rpm_list:
   - kubelet-1.13.4-0.x86_64
   - kubeadm-1.13.4-0.x86_64
   - kubectl-1.13.4-0.x86_64
-  - docker-1.13.1-91.git07f3374.el7.centos
+  - docker-1.13.1
   - kubernetes-cni-0.6.0-0.x86_64
