@@ -66,6 +66,8 @@
 
     - name: create cluster
       shell: kubeadm init --config /root/kubeadm_init_"{{ version }}"
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
 
     - name: Create cluster network
       command: kubectl create -f /root/calico-3.5.2-recommended.yaml
