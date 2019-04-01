@@ -4,7 +4,7 @@ Install CRI (Docker-ce)
 # Install Docker CE
 ## Set up the repository
 ### Install required packages.
-yum install yum-utils device-mapper-persistent-data lvm2
+yum install -y yum-utils device-mapper-persistent-data lvm2
 
 ### Add Docker repository.
 yum-config-manager \
@@ -12,7 +12,7 @@ yum-config-manager \
   https://download.docker.com/linux/centos/docker-ce.repo
 
 ## Install Docker CE.
-yum update && yum install docker-ce-18.06.2.ce
+yum update -y && yum install -y docker-ce-18.06.2.ce
 (reboot?)
 
 ## Create /etc/docker directory.
@@ -78,7 +78,7 @@ Install with kubeadm
 ====================
 kubeadm config images pull
 
-kubeadm init
+kubeadm init --pod-network-cidr=192.168.0.0/16
 
   mkdir -p $HOME/.kube
   sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
@@ -86,4 +86,9 @@ kubeadm init
 
 kubectl apply -f https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/hosted/rbac-kdd.yaml
 kubectl apply -f https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/hosted/kubernetes-datastore/calico-networking/1.7/calico.yaml
+
+---
+kubeadm join 172.16.0.132:6443 --token o5gv95.z9nmq3ehx0982nw5 \
+    --discovery-token-ca-cert-hash sha256:fb7a6b20c79e7130be2e83ad27e934c3e3e6ab7f5afeec1a18db1a79c819f08e 
+
 

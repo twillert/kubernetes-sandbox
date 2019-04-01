@@ -1,0 +1,83 @@
+#
+# Create a simple Kubernetes cluster:
+#   - 1x Master (+ etcd)
+#   - 2x Worker nodes
+#
+---
+- hosts: tag_role_master:tag_role_node
+  tags:
+    - prepare_docker
+  tasks:
+    - name: Add Docker repository
+      shell: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+    - name: Install Docker CE 18
+      yum:
+        name: docker-ce-18.06.2.ce
+        state: installed
+
+    - name: create /etc/docker
+      file:
+        path: /etc/docker
+        state: directory
+
+    - name: create /etc/docker/daemon.json
+      copy:
+        src: files/daemon.json
+        dest: /etc/docker/daemon.json
+
+    - name: create /etc/systemd/system/docker.service.d
+      file:
+        path: /etc/systemd/system/docker.service.d
+        state: directory
+        recurse: yes
+
+    - name: initialize docker service
+      systemd:
+        name: docker
+        daemon_reload: yes
+        enabled: yes
+        state: restarted
+      
+- hosts: tag_role_master:tag_role_node
+  tags:
+    - prepare_kube_tools
+  tasks:
+    - name: Add Kubernetes repository
+      copy:
+        src: files/kubernetes.repo
+        dest: /etc/yum.repos.d/kubernetes.repo
+
+    - name: disable SELinux
+      selinux:
+        state: disabled
+
+    - name: install kube tools
+      yum:
+        name: kubelet, kubeadm, kubectl
+        state: installed
+        disable_excludes: kubernetes
+
+    - name: iniitialize Kubelet service
+      systemd:
+        name: kubelet
+        daemon_reload: yes
+        enabled: yes
+        state: restarted
+
+    - name: set net.bridge.bridge-nf-call-iptables = 1
+      sysctl:
+        name: net.bridge.bridge-nf-call-iptables
+        value: 1
+        sysctl_set: yes
+        state: present
+        reload: yes
+    
+- hosts: tag_role_master
+  tags:
+    - kubeadm_init
+  tasks:
+    - name: execute kubeadm init
+      shell: kubeadm init --pod-network-cidr=192.168.0.0/16
+
+     
