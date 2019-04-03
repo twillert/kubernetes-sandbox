@@ -79,5 +79,45 @@
   tasks:
     - name: execute kubeadm init
       shell: kubeadm init --pod-network-cidr=192.168.0.0/16
+      ignore_errors: yes
 
-     
+    - name: copy Kubernetes admin config
+      shell: "mkdir -p /root/.kube ; cp -f /etc/kubernetes/admin.conf /root/.kube/config"
+
+    - name: Calico rbac
+      shell: kubectl apply -f https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/hosted/rbac-kdd.yaml
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
+
+    - name: Calico network
+      shell: kubectl apply -f https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/hosted/kubernetes-datastore/calico-networking/1.7/calico.yaml
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
+
+    - name: Create cluster token
+      shell: kubeadm token create
+      register: kubeadm_token_generate
+
+    - set_fact: kubeadm_token={{ kubeadm_token_generate.stdout }}
+    - set_fact: master={{ inventory_hostname }}
+    - debug: var=kubeadm_token
+
+    - shell: kubeadm token list
+      register: token_list
+
+    - debug: msg="{{ token_list.stdout }}"
+
+- hosts: tag_role_node
+  tags:
+    - add_worker_nodes
+  tasks:
+    - set_fact: master="{{ groups['tag_role_master'][0] }}"
+    - set_fact: kubeadm_token="{{ hostvars[ master]['kubeadm_token'] }}"
+    - set_fact: cluster_name="{{ hostvars[master]['ansible_host'] }}"
+
+    - debug: var=kubeadm_token
+    - debug: var=master
+
+    - name: Join cluster
+      shell: "kubeadm join --token {{ kubeadm_token }} --discovery-token-unsafe-skip-ca-verification {{ cluster_name }}:6443"
+
